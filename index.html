@@ -251,7 +251,7 @@ WikiText</span>
 </noscript>
 <!----------- Miscellaneous system tiddlers ----------->
 <div id="systemArea" style="display:none;">
-<div description="TiddlyWiki5 core plugin" plugin-priority="0" plugin-type="plugin" title="$:/core" type="application/json" version="5.0.0-alpha.10" revision="0" bag="default">
+<div description="TiddlyWiki5 core plugin" plugin-priority="0" plugin-type="plugin" title="$:/core" type="application/json" version="5.0.0-alpha.10">
 <pre>{
     &quot;title&quot;: &quot;$:/core&quot;,
     &quot;description&quot;: &quot;TiddlyWiki5 core plugin&quot;,
@@ -1482,7 +1482,7 @@ WikiText</span>
     &quot;version&quot;: &quot;5.0.0-alpha.10&quot;
 }</pre>
 </div>
-<div description="Adds support for HTML5 full screen mode" plugin-type="plugin" title="$:/plugins/tiddlywiki/fullscreen" type="application/json" version="5.0.0-alpha.10" revision="0" bag="default">
+<div description="Adds support for HTML5 full screen mode" plugin-type="plugin" title="$:/plugins/tiddlywiki/fullscreen" type="application/json" version="5.0.0-alpha.10">
 <pre>{
     &quot;title&quot;: &quot;$:/plugins/tiddlywiki/fullscreen&quot;,
     &quot;description&quot;: &quot;Adds support for HTML5 full screen mode&quot;,
@@ -1499,49 +1499,7 @@ WikiText</span>
     &quot;version&quot;: &quot;5.0.0-alpha.10&quot;
 }</pre>
 </div>
-<div description="TiddlyWeb and TiddlySpace components" plugin-type="plugin" title="$:/plugins/tiddlywiki/tiddlyweb" type="application/json" version="5.0.0-alpha.10" revision="0" bag="default">
-<pre>{
-    &quot;title&quot;: &quot;$:/plugins/tiddlywiki/tiddlyweb&quot;,
-    &quot;description&quot;: &quot;TiddlyWeb and TiddlySpace components&quot;,
-    &quot;author&quot;: &quot;JeremyRuston&quot;,
-    &quot;core-version&quot;: &quot;&gt;=5.0.0&quot;,
-    &quot;tiddlers&quot;: {
-        &quot;$:/core/ui/ServerControlPanel&quot;: {
-            &quot;title&quot;: &quot;$:/core/ui/ServerControlPanel&quot;,
-            &quot;text&quot;: &quot;----\n\n&lt;$reveal state=\&quot;$:/status/IsLoggedIn\&quot; type=\&quot;nomatch\&quot; text=\&quot;yes\&quot;&gt;\nLog in to ~TiddlyWeb: &lt;$button message=\&quot;tw-login\&quot; class=\&quot;btn btn-info\&quot;&gt;Login&lt;/$button&gt;\n&lt;/$reveal&gt;\n&lt;$reveal state=\&quot;$:/status/IsLoggedIn\&quot; type=\&quot;match\&quot; text=\&quot;yes\&quot;&gt;\nLog out of ~TiddlyWeb: &lt;$button message=\&quot;tw-logout\&quot; class=\&quot;btn btn-warning\&quot;&gt;Logout&lt;/$button&gt;\n&lt;/$reveal&gt;\n\n&lt;$button message=\&quot;tw-server-refresh\&quot; class=\&quot;btn btn-warning\&quot;&gt;Refresh&lt;/$button&gt; to fetch changes from the server immediately\n&quot;
-        },
-        &quot;$:/core/templates/html-div-tiddler&quot;: {
-            &quot;title&quot;: &quot;$:/core/templates/html-div-tiddler&quot;,
-            &quot;text&quot;: &quot;&lt;!--\n\nThis template is used for saving tiddlers as an HTML DIV tag with attributes representing the tiddler fields. This version includes the tiddler changecount as the field `revision`.\n\n--&gt;`&lt;div`&lt;$fields exclude='text revision bag' template=' $name$=\&quot;$encoded_value$\&quot;'&gt;&lt;/$fields&gt;` revision=\&quot;`&lt;$info type='changecount'/&gt;`\&quot; bag=\&quot;default\&quot;&gt;\n&lt;pre&gt;`&lt;$view field=\&quot;text\&quot; format=\&quot;htmlencoded\&quot; /&gt;`&lt;/pre&gt;\n&lt;/div&gt;`\n&quot;
-        },
-        &quot;$:/plugins/tiddlywiki/tiddlyweb/tiddlywebadaptor.js&quot;: {
-            &quot;text&quot;: &quot;/*\\\ntitle: $:/plugins/tiddlywiki/tiddlyweb/tiddlywebadaptor.js\ntype: application/javascript\nmodule-type: syncadaptor\n\nA sync adaptor module for synchronising with TiddlyWeb compatible servers \n\n\\*/\n(function(){\n\n/*jslint node: true, browser: true */\n/*global $tw: false */\n\&quot;use strict\&quot;;\n\nvar CONFIG_HOST_TIDDLER = \&quot;$:/config/tiddlyweb/host\&quot;,\n\tDEFAULT_HOST_TIDDLER = \&quot;$protocol$//$host$/\&quot;;\n\nfunction TiddlyWebAdaptor(syncer) {\n\tthis.syncer = syncer;\n\tthis.host = this.getHost();\n\tthis.recipe = undefined;\n}\n\nTiddlyWebAdaptor.prototype.getHost = function() {\n\tvar text = this.syncer.wiki.getTiddlerText(CONFIG_HOST_TIDDLER,DEFAULT_HOST_TIDDLER),\n\t\tsubstitutions = [\n\t\t\t{name: \&quot;protocol\&quot;, value: document.location.protocol},\n\t\t\t{name: \&quot;host\&quot;, value: document.location.host}\n\t\t];\n\tfor(var t=0; t&lt;substitutions.length; t++) {\n\t\tvar s = substitutions[t];\n\t\ttext = text.replace(new RegExp(\&quot;\\\\$\&quot; + s.name + \&quot;\\\\$\&quot;,\&quot;mg\&quot;),s.value);\n\t}\n\treturn text;\n};\n\nTiddlyWebAdaptor.prototype.getTiddlerInfo = function(tiddler) {\n\treturn {\n\t\tbag: tiddler.fields[\&quot;bag\&quot;]\n\t};\n};\n\n/*\nGet the current status of the TiddlyWeb connection\n*/\nTiddlyWebAdaptor.prototype.getStatus = function(callback) {\n\t// Get status\n\tvar self = this,\n\t\twiki = self.syncer.wiki;\n\tthis.syncer.log(\&quot;Getting status\&quot;);\n\t$tw.utils.httpRequest({\n\t\turl: this.host + \&quot;status\&quot;,\n\t\tcallback: function(err,data) {\n\t\t\tif(err) {\n\t\t\t\treturn callback(err);\n\t\t\t}\n\t\t\t// Decode the status JSON\n\t\t\tvar json = null,\n\t\t\t\tisLoggedIn = false;\n\t\t\ttry {\n\t\t\t\tjson = JSON.parse(data);\n\t\t\t} catch (e) {\n\t\t\t}\n\t\t\tif(json) {\n\t\t\t\t// Record the recipe\n\t\t\t\tif(json.space) {\n\t\t\t\t\tself.recipe = json.space.recipe;\n\t\t\t\t}\n\t\t\t\t// Check if we're logged in\n\t\t\t\tisLoggedIn = json.username !== \&quot;GUEST\&quot;;\n\t\t\t}\n\t\t\t// Invoke the callback if present\n\t\t\tif(callback) {\n\t\t\t\tcallback(null,isLoggedIn,json.username);\n\t\t\t}\n\t\t}\n\t});\n};\n\n/*\nAttempt to login and invoke the callback(err)\n*/\nTiddlyWebAdaptor.prototype.login = function(username,password,callback) {\n\tvar self = this;\n\t$tw.utils.httpRequest({\n\t\turl: this.host + \&quot;challenge/tiddlywebplugins.tiddlyspace.cookie_form\&quot;,\n\t\ttype: \&quot;POST\&quot;,\n\t\tdata: {\n\t\t\tuser: username,\n\t\t\tpassword: password,\n\t\t\ttiddlyweb_redirect: \&quot;/status\&quot; // workaround to marginalize automatic subsequent GET\n\t\t},\n\t\tcallback: function(err) {\n\t\t\tcallback(err);\n\t\t}\n\t});\n};\n\n/*\n*/\nTiddlyWebAdaptor.prototype.logout = function(callback) {\n\tvar self = this;\n\t$tw.utils.httpRequest({\n\t\turl: this.host + \&quot;logout\&quot;,\n\t\ttype: \&quot;POST\&quot;,\n\t\tdata: {\n\t\t\tcsrf_token: this.getCsrfToken(),\n\t\t\ttiddlyweb_redirect: \&quot;/status\&quot; // workaround to marginalize automatic subsequent GET\n\t\t},\n\t\tcallback: function(err,data) {\n\t\t\tcallback(err);\n\t\t}\n\t});\n};\n\n/*\nRetrieve the CSRF token from its cookie\n*/\nTiddlyWebAdaptor.prototype.getCsrfToken = function() {\n\tvar regex = /^(?:.*; )?csrf_token=([^(;|$)]*)(?:;|$)/,\n\t\tmatch = regex.exec(document.cookie),\n\t\tcsrf = null;\n\tif (match &amp;&amp; (match.length === 2)) {\n\t\tcsrf = match[1];\n\t}\n\treturn csrf;\n};\n\n/*\nGet an array of skinny tiddler fields from the server\n*/\nTiddlyWebAdaptor.prototype.getSkinnyTiddlers = function(callback) {\n\t$tw.utils.httpRequest({\n\t\turl: this.host + \&quot;recipes/\&quot; + this.recipe + \&quot;/tiddlers.json\&quot;,\n\t\tcallback: function(err,data) {\n\t\t\t// Check for errors\n\t\t\tif(err) {\n\t\t\t\treturn callback(err);\n\t\t\t}\n\t\t\t// Process the tiddlers to make sure the revision is a string\n\t\t\tvar tiddlers = JSON.parse(data);\n\t\t\tfor(var t=0; t&lt;tiddlers.length; t++) {\n\t\t\t\tvar tiddlerFields = tiddlers[t];\n\t\t\t\tif(typeof tiddlerFields.revision === \&quot;number\&quot;) {\n\t\t\t\t\ttiddlerFields.revision = tiddlerFields.revision.toString();\n\t\t\t\t}\n\t\t\t}\n\t\t\t// Invoke the callback with the skinny tiddlers\n\t\t\tcallback(null,tiddlers);\n\t\t}\n\t});\n};\n\n/*\nSave a tiddler and invoke the callback with (err,adaptorInfo,revision)\n*/\nTiddlyWebAdaptor.prototype.saveTiddler = function(tiddler,callback) {\n\tvar self = this;\n\t$tw.utils.httpRequest({\n\t\turl: this.host + \&quot;recipes/\&quot; + encodeURIComponent(this.recipe) + \&quot;/tiddlers/\&quot; + encodeURIComponent(tiddler.fields.title),\n\t\ttype: \&quot;PUT\&quot;,\n\t\theaders: {\n\t\t\t\&quot;Content-type\&quot;: \&quot;application/json\&quot;\n\t\t},\n\t\tdata: this.convertTiddlerToTiddlyWebFormat(tiddler),\n\t\tcallback: function(err,data,request) {\n\t\t\tif(err) {\n\t\t\t\treturn callback(err);\n\t\t\t}\n\t\t\t// Save the details of the new revision of the tiddler\n\t\t\tvar etagInfo = self.parseEtag(request.getResponseHeader(\&quot;Etag\&quot;));\n\t\t\t// Invoke the callback\n\t\t\tcallback(null,{\n\t\t\t\tbag: etagInfo.bag\n\t\t\t}, etagInfo.revision);\t\n\t\t}\n\t});\n};\n\n/*\nLoad a tiddler and invoke the callback with (err,tiddlerFields)\n*/\nTiddlyWebAdaptor.prototype.loadTiddler = function(title,callback) {\n\tvar self = this;\n\t$tw.utils.httpRequest({\n\t\turl: this.host + \&quot;recipes/\&quot; + encodeURIComponent(this.recipe) + \&quot;/tiddlers/\&quot; + encodeURIComponent(title),\n\t\tcallback: function(err,data,request) {\n\t\t\tif(err) {\n\t\t\t\treturn callback(err);\n\t\t\t}\n\t\t\t// Invoke the callback\n\t\t\tcallback(null,self.convertTiddlerFromTiddlyWebFormat(data));\n\t\t}\n\t});\n};\n\n/*\nDelete a tiddler and invoke the callback with (err)\n*/\nTiddlyWebAdaptor.prototype.deleteTiddler = function(title,callback) {\n\tvar self = this,\n\t\tbag = this.syncer.tiddlerInfo[title].adaptorInfo.bag;\n\t$tw.utils.httpRequest({\n\t\turl: this.host + \&quot;bags/\&quot; + encodeURIComponent(bag) + \&quot;/tiddlers/\&quot; + encodeURIComponent(title),\n\t\ttype: \&quot;DELETE\&quot;,\n\t\tcallback: function(err,data,request) {\n\t\t\tif(err) {\n\t\t\t\treturn callback(err);\n\t\t\t}\n\t\t\t// Invoke the callback\n\t\t\tcallback(null);\n\t\t}\n\t});\n};\n\n/*\nConvert a tiddler to a field set suitable for PUTting to TiddlyWeb\n*/\nTiddlyWebAdaptor.prototype.convertTiddlerToTiddlyWebFormat = function(tiddler) {\n\tvar result = {},\n\t\tknownFields = [\n\t\t\t\&quot;bag\&quot;, \&quot;created\&quot;, \&quot;creator\&quot;, \&quot;modified\&quot;, \&quot;modifier\&quot;, \&quot;permissions\&quot;, \&quot;recipe\&quot;, \&quot;revision\&quot;, \&quot;tags\&quot;, \&quot;text\&quot;, \&quot;title\&quot;, \&quot;type\&quot;, \&quot;uri\&quot;\n\t\t];\n\tif(tiddler) {\n\t\t$tw.utils.each(tiddler.fields,function(fieldValue,fieldName) {\n\t\t\tvar fieldString = fieldName === \&quot;tags\&quot; ?\n\t\t\t\t\t\t\t\ttiddler.fields.tags :\n\t\t\t\t\t\t\t\ttiddler.getFieldString(fieldName); // Tags must be passed as an array, not a string\n\n\t\t\tif(knownFields.indexOf(fieldName) !== -1) {\n\t\t\t\t// If it's a known field, just copy it across\n\t\t\t\tresult[fieldName] = fieldString;\n\t\t\t} else {\n\t\t\t\t// If it's unknown, put it in the \&quot;fields\&quot; field\n\t\t\t\tresult.fields = result.fields || {};\n\t\t\t\tresult.fields[fieldName] = fieldString;\n\t\t\t}\n\t\t});\n\t}\n\t// Convert the type \&quot;text/x-tiddlywiki\&quot; into null\n\tif(result.type === \&quot;text/x-tiddlywiki\&quot;) {\n\t\tresult.type = null;\n\t}\n\treturn JSON.stringify(result,null,$tw.config.preferences.jsonSpaces);\n};\n\n/*\nConvert a field set in TiddlyWeb format into ordinary TiddlyWiki5 format\n*/\nTiddlyWebAdaptor.prototype.convertTiddlerFromTiddlyWebFormat = function(data) {\n\tvar tiddlerFields = JSON.parse(data),\n\t\tself = this,\n\t\tresult = {};\n\t// Transfer the fields, pulling down the `fields` hashmap\n\t$tw.utils.each(tiddlerFields,function(element,title,object) {\n\t\tif(title === \&quot;fields\&quot;) {\n\t\t\t$tw.utils.each(element,function(element,subTitle,object) {\n\t\t\t\tresult[subTitle] = element;\n\t\t\t});\n\t\t} else {\n\t\t\tresult[title] = tiddlerFields[title];\n\t\t}\n\t});\n\t// Make sure the revision is expressed as a string\n\tif(typeof result.revision === \&quot;number\&quot;) {\n\t\tresult.revision = result.revision.toString();\n\t}\n\t// Some unholy freaking of content types\n\tif(result.type === \&quot;text/javascript\&quot;) {\n\t\tresult.type = \&quot;application/javascript\&quot;;\n\t} else if(!result.type || result.type === \&quot;None\&quot;) {\n\t\tresult.type = \&quot;text/x-tiddlywiki\&quot;;\n\t}\n\treturn result;\n};\n\n/*\nSplit a TiddlyWeb Etag into its constituent parts. For example:\n\n```\n\&quot;system-images_public/unsyncedIcon/946151:9f11c278ccde3a3149f339f4a1db80dd4369fc04\&quot;\n```\n\nNote that the value includes the opening and closing double quotes.\n\nThe parts are:\n\n```\n&lt;bag&gt;/&lt;title&gt;/&lt;revision&gt;:&lt;hash&gt;\n```\n*/\nTiddlyWebAdaptor.prototype.parseEtag = function(etag) {\n\tvar firstSlash = etag.indexOf(\&quot;/\&quot;),\n\t\tlastSlash = etag.lastIndexOf(\&quot;/\&quot;),\n\t\tcolon = etag.lastIndexOf(\&quot;:\&quot;);\n\tif(firstSlash === -1 || lastSlash === -1 || colon === -1) {\n\t\treturn null;\n\t} else {\n\t\treturn {\n\t\t\tbag: decodeURIComponent(etag.substring(1,firstSlash)),\n\t\t\ttitle: decodeURIComponent(etag.substring(firstSlash + 1,lastSlash)),\n\t\t\trevision: etag.substring(lastSlash + 1,colon)\n\t\t};\n\t}\n};\n\nif($tw.browser) {\n\texports.adaptorClass = TiddlyWebAdaptor;\n}\n\n})();\n&quot;,
-            &quot;title&quot;: &quot;$:/plugins/tiddlywiki/tiddlyweb/tiddlywebadaptor.js&quot;,
-            &quot;type&quot;: &quot;application/javascript&quot;,
-            &quot;module-type&quot;: &quot;syncadaptor&quot;
-        }
-    },
-    &quot;version&quot;: &quot;5.0.0-alpha.10&quot;
-}</pre>
-</div>
-<div description="File system synchronisation" plugin-type="plugin" title="$:/plugins/tiddlywiki/filesystem" type="application/json" version="5.0.0-alpha.10" revision="0" bag="default">
-<pre>{
-    &quot;title&quot;: &quot;$:/plugins/tiddlywiki/filesystem&quot;,
-    &quot;description&quot;: &quot;File system synchronisation&quot;,
-    &quot;author&quot;: &quot;JeremyRuston&quot;,
-    &quot;core-version&quot;: &quot;&gt;=5.0.0&quot;,
-    &quot;tiddlers&quot;: {
-        &quot;$:/plugins/tiddlywiki/filesystem/filesystemadaptor.js&quot;: {
-            &quot;text&quot;: &quot;/*\\\ntitle: $:/plugins/tiddlywiki/filesystem/filesystemadaptor.js\ntype: application/javascript\nmodule-type: syncadaptor\n\nA sync adaptor module for synchronising with the local filesystem via node.js APIs \n\n\\*/\n(function(){\n\n/*jslint node: true, browser: true */\n/*global $tw: false */\n\&quot;use strict\&quot;;\n\n// Get a reference to the file system\nvar fs = !$tw.browser ? require(\&quot;fs\&quot;) : null;\n\nfunction FileSystemAdaptor(syncer) {\n\tthis.syncer = syncer;\n}\n\nFileSystemAdaptor.prototype.getTiddlerInfo = function(tiddler) {\n\treturn {};\n};\n\n$tw.config.typeInfo = {\n\t\&quot;text/vnd.tiddlywiki\&quot;: {\n\t\tfileType: \&quot;application/x-tiddler\&quot;,\n\t\textension: \&quot;.tid\&quot;\n\t},\n\t\&quot;image/jpeg\&quot; : {\n\t\thasMetaFile: true\n\t}\n};\n\n$tw.config.typeTemplates = {\n\t\&quot;application/x-tiddler\&quot;: \&quot;$:/core/templates/tid-tiddler\&quot;\n};\n\nFileSystemAdaptor.prototype.getTiddlerFileInfo = function(tiddler,callback) {\n\t// See if we've already got information about this file\n\tvar self = this,\n\t\ttitle = tiddler.fields.title,\n\t\tfileInfo = $tw.boot.files[title];\n\t// Get information about how to save tiddlers of this type\n\tvar type = tiddler.fields.type || \&quot;text/vnd.tiddlywiki\&quot;,\n\t\ttypeInfo = $tw.config.typeInfo[type];\n\tif(!typeInfo) {\n\t\ttypeInfo = $tw.config.typeInfo[\&quot;text/vnd.tiddlywiki\&quot;];\n\t}\n\tvar extension = typeInfo.extension || \&quot;\&quot;;\n\tif(!fileInfo) {\n\t\t// If not, we'll need to generate it\n\t\t// Start by getting a list of the existing files in the directory\n\t\tfs.readdir($tw.boot.wikiTiddlersPath,function(err,files) {\n\t\t\tif(err) {\n\t\t\t\treturn callback(err);\n\t\t\t}\n\t\t\t// Assemble the new fileInfo\n\t\t\tfileInfo = {};\n\t\t\tfileInfo.filepath = $tw.boot.wikiTiddlersPath + \&quot;/\&quot; + self.generateTiddlerFilename(title,extension,files);\n\t\t\tfileInfo.type = typeInfo.fileType || tiddler.fields.type;\n\t\t\tfileInfo.hasMetaFile = typeInfo.hasMetaFile;\n\t\t\t// Save the newly created fileInfo\n\t\t\t$tw.boot.files[title] = fileInfo;\n\t\t\t// Pass it to the callback\n\t\t\tcallback(null,fileInfo);\n\t\t});\n\t} else {\n\t\t// Otherwise just invoke the callback\n\t\tcallback(null,fileInfo);\n\t}\n};\n\n/*\nGiven a tiddler title and an array of existing filenames, generate a new legal filename for the title, case insensitively avoiding the array of existing filenames\n*/\nFileSystemAdaptor.prototype.generateTiddlerFilename = function(title,extension,existingFilenames) {\n\t// First remove any of the characters that are illegal in Windows filenames\n\tvar baseFilename = title.replace(/\\&lt;|\\&gt;|\\:|\\\&quot;|\\/|\\\\|\\||\\?|\\*|\\^/g,\&quot;_\&quot;);\n\t// Truncate the filename if it is too long\n\tif(baseFilename.length &gt; 200) {\n\t\tbaseFilename = baseFilename.substr(0,200) + extension;\n\t}\n\t// Start with the base filename plus the extension\n\tvar filename = baseFilename + extension,\n\t\tcount = 1;\n\t// Add a discriminator if we're clashing with an existing filename\n\twhile(existingFilenames.indexOf(filename) !== -1) {\n\t\tfilename = baseFilename + \&quot; \&quot; + (count++) + extension;\n\t}\n\treturn filename;\n};\n\n/*\nSave a tiddler and invoke the callback with (err,adaptorInfo,revision)\n*/\nFileSystemAdaptor.prototype.saveTiddler = function(tiddler,callback) {\n\tthis.getTiddlerFileInfo(tiddler,function(err,fileInfo) {\n\t\tvar template, content, encoding;\n\t\tif(err) {\n\t\t\treturn callback(err);\n\t\t}\n\t\tif($tw.boot.wikiInfo.doNotSave &amp;&amp; $tw.boot.wikiInfo.doNotSave.indexOf(tiddler.fields.title) !== -1) {\n\t\t\t// Don't save the tiddler if it is on the blacklist\n\t\t\tcallback(null,{},0);\n\t\t} else if(fileInfo.hasMetaFile) {\n\t\t\t// Save the tiddler as a separate body and meta file\n\t\t\tvar typeInfo = $tw.config.contentTypeInfo[fileInfo.type];\n\t\t\tfs.writeFile(fileInfo.filepath,tiddler.fields.text,{encoding: typeInfo.encoding},function(err) {\n\t\t\t\tif(err) {\n\t\t\t\t\treturn callback(err);\n\t\t\t\t}\n\t\t\t\tcontent = $tw.wiki.renderTiddler(\&quot;text/plain\&quot;,\&quot;$:/core/templates/tiddler-metadata\&quot;,{tiddlerTitle: tiddler.fields.title});\n\t\t\t\tfs.writeFile(fileInfo.filepath + \&quot;.meta\&quot;,content,{encoding: \&quot;utf8\&quot;},function (err) {\n\t\t\t\t\tif(err) {\n\t\t\t\t\t\treturn callback(err);\n\t\t\t\t\t}\nconsole.log(\&quot;FileSystem: Saved file\&quot;,fileInfo.filepath);\n\t\t\t\t\tcallback(null,{},0);\n\t\t\t\t});\n\t\t\t});\n\t\t} else {\n\t\t\t// Save the tiddler as a self contained templated file\n\t\t\ttemplate = $tw.config.typeTemplates[fileInfo.type];\n\t\t\tcontent = $tw.wiki.renderTiddler(\&quot;text/plain\&quot;,template,{tiddlerTitle: tiddler.fields.title});\n\t\t\tfs.writeFile(fileInfo.filepath,content,{encoding: \&quot;utf8\&quot;},function (err) {\n\t\t\t\tif(err) {\n\t\t\t\t\treturn callback(err);\n\t\t\t\t}\nconsole.log(\&quot;FileSystem: Saved file\&quot;,fileInfo.filepath);\n\t\t\t\tcallback(null,{},0);\n\t\t\t});\n\t\t}\n\t});\n};\n\n/*\nLoad a tiddler and invoke the callback with (err,tiddlerFields)\n*/\nFileSystemAdaptor.prototype.loadTiddler = function(title,callback) {\nconsole.log(\&quot;FileSystem: Loading\&quot;,title);\n\tcallback(null,{title: title, text: \&quot;Fake tiddler: \&quot; + title});\n};\n\n/*\nDelete a tiddler and invoke the callback with (err)\n*/\nFileSystemAdaptor.prototype.deleteTiddler = function(title,callback) {\n\tvar self = this,\n\t\tfileInfo = $tw.boot.files[title];\n\t// Only delete the tiddler if we have writable information for the file\n\tif(fileInfo) {\n\t\tif($tw.boot.wikiInfo.doNotSave &amp;&amp; $tw.boot.wikiInfo.doNotSave.indexOf(title) !== -1) {\n\t\t\t// Don't delete the tiddler if it is on the blacklist\n\t\t\tcallback(null);\n\t\t} else {\n\t\t\t// Delete the file\n\t\t\tfs.unlink(fileInfo.filepath,function(err) {\n\t\t\t\tif(err) {\n\t\t\t\t\treturn callback(err);\n\t\t\t\t}\nconsole.log(\&quot;FileSystem: Deleted file\&quot;,fileInfo.filepath);\n\t\t\t\t// Delete the metafile if present\n\t\t\t\tif(fileInfo.hasMetaFile) {\n\t\t\t\t\tfs.unlink(fileInfo.filepath + \&quot;.meta\&quot;,function(err) {\n\t\t\t\t\t\tif(err) {\n\t\t\t\t\t\t\treturn callback(err);\n\t\t\t\t\t\t}\n\t\t\t\t\t\tcallback(null);\n\t\t\t\t\t});\n\t\t\t\t} else {\n\t\t\t\t\tcallback(null);\n\t\t\t\t}\n\t\t\t});\n\t\t}\n\t} else {\n\t\tcallback(null);\n\t}\n};\n\nif(fs) {\n\texports.adaptorClass = FileSystemAdaptor;\n}\n\n})();\n&quot;,
-            &quot;title&quot;: &quot;$:/plugins/tiddlywiki/filesystem/filesystemadaptor.js&quot;,
-            &quot;type&quot;: &quot;application/javascript&quot;,
-            &quot;module-type&quot;: &quot;syncadaptor&quot;
-        }
-    },
-    &quot;version&quot;: &quot;5.0.0-alpha.10&quot;
-}</pre>
-</div>
-<div description="Semantic UI plugin" plugin-priority="2" plugin-type="plugin" title="$:/plugins/morg/semantic" type="application/json" version="5.0.0-alpha.10" revision="0" bag="default">
+<div description="Semantic UI plugin" plugin-priority="2" plugin-type="plugin" title="$:/plugins/morg/semantic" type="application/json" version="5.0.0-alpha.10">
 <pre>{
     &quot;title&quot;: &quot;$:/plugins/morg/semantic&quot;,
     &quot;description&quot;: &quot;Semantic UI plugin&quot;,
@@ -1564,7 +1522,7 @@ WikiText</span>
     &quot;version&quot;: &quot;5.0.0-alpha.10&quot;
 }</pre>
 </div>
-<div description="jQuery 2 plugin" plugin-priority="1" plugin-type="plugin" title="$:/plugins/morg/jquery" type="application/json" version="5.0.0-alpha.10" revision="0" bag="default">
+<div description="jQuery 2 plugin" plugin-priority="1" plugin-type="plugin" title="$:/plugins/morg/jquery" type="application/json" version="5.0.0-alpha.10">
 <pre>{
     &quot;title&quot;: &quot;$:/plugins/morg/jquery&quot;,
     &quot;description&quot;: &quot;jQuery 2 plugin&quot;,
@@ -1582,7 +1540,7 @@ WikiText</span>
     &quot;version&quot;: &quot;5.0.0-alpha.10&quot;
 }</pre>
 </div>
-<div description="MOtiwi JavaScript plugin" plugin-priority="3" plugin-type="plugin" title="$:/plugins/morg/motiwi" type="application/json" version="5.0.0-alpha.10" revision="0" bag="default">
+<div description="MOtiwi JavaScript plugin" plugin-priority="3" plugin-type="plugin" title="$:/plugins/morg/motiwi" type="application/json" version="5.0.0-alpha.10">
 <pre>{
     &quot;title&quot;: &quot;$:/plugins/morg/motiwi&quot;,
     &quot;description&quot;: &quot;MOtiwi JavaScript plugin&quot;,
@@ -1600,7 +1558,7 @@ WikiText</span>
     &quot;version&quot;: &quot;5.0.0-alpha.10&quot;
 }</pre>
 </div>
-<div description="A plain simple theme that emphasises individual tiddlers" name="MOrg TiddyWiki Theme" plugin-type="theme" title="$:/themes/motiwi/motiwi" type="application/json" version="5.0.0-alpha.10" revision="0" bag="default">
+<div description="A plain simple theme that emphasises individual tiddlers" name="MOrg TiddyWiki Theme" plugin-type="theme" title="$:/themes/motiwi/motiwi" type="application/json" version="5.0.0-alpha.10">
 <pre>{
     &quot;title&quot;: &quot;$:/themes/motiwi/motiwi&quot;,
     &quot;name&quot;: &quot;MOrg TiddyWiki Theme&quot;,
@@ -1650,14 +1608,11 @@ WikiText</span>
     &quot;version&quot;: &quot;5.0.0-alpha.10&quot;
 }</pre>
 </div>
-<div title="$:/isEncrypted" revision="0" bag="default">
-<pre>no</pre>
-</div>
-<div title="$:/DefaultTiddlers" revision="0" bag="default">
+<div title="$:/DefaultTiddlers">
 <pre>RocketDrop
 </pre>
 </div>
-<div modifier="Morgan" title="$:/core/ui/EditTemplate" revision="0" bag="default">
+<div modifier="Morgan" title="$:/core/ui/EditTemplate">
 <pre>&lt;span class=&quot;tw-tiddler-controls title&quot;&gt; 
   &lt;$button message=&quot;tw-delete-tiddler&quot; class=&quot;btn-invisible&quot;&gt;{{$:/core/images/delete-button}}&lt;/$button&gt;
   &lt;$button message=&quot;tw-cancel-tiddler&quot; class=&quot;btn-invisible&quot;&gt;{{$:/core/images/cancel-button}}&lt;/$button&gt;
@@ -1693,7 +1648,7 @@ WikiText</span>
 &lt;$transclude title=&quot;$:/core/ui/FieldEditor&quot;/&gt;
 </pre>
 </div>
-<div title="$:/core/ui/FieldEditor" revision="0" bag="default">
+<div title="$:/core/ui/FieldEditor">
 <pre>\define renderfield(title)
 &lt;div class=&quot;ui form&quot;&gt; 
   &lt;label&gt;$title$:&lt;/label&gt;
@@ -1718,7 +1673,7 @@ WikiText</span>
 &lt;/$fieldmangler&gt;
 </pre>
 </div>
-<div title="$:/core/ui/MoreSideBar" revision="0" bag="default">
+<div title="$:/core/ui/MoreSideBar">
 <pre>&lt;div class=&quot;tw-tab-set tw-more-sidebar&quot;&gt;&lt;div class=&quot;tw-tab-buttons&quot;&gt;
 
 &lt;$button type=&quot;set&quot; set=&quot;$:/state/moreSideBarTabSet&quot; setTo=&quot;allTab&quot; qualifyTiddlerTitles=&quot;yes&quot; selectedClass=&quot;tw-tab-selected&quot;&gt;All&lt;/$button&gt;
@@ -1779,7 +1734,7 @@ WikiText</span>
 &lt;/div&gt;&lt;/div&gt;
 </pre>
 </div>
-<div title="$:/core/ui/PageTemplate" revision="0" bag="default">
+<div title="$:/core/ui/PageTemplate">
 <pre>&lt;!-- The navigator catches navigation events and updates the story and history tiddlers --&gt;
 &lt;$navigator story=&quot;$:/StoryList&quot; history=&quot;$:/HistoryList&quot;&gt;
 
@@ -1867,16 +1822,19 @@ WikiText</span>
     &lt;div class=&quot;right menu&quot;&gt; 
       &lt;$reveal type=&quot;match&quot; state=&quot;$:/isEncrypted&quot; text=&quot;yes&quot;&gt; 
         &lt;a class=&quot;item icon popup&quot; title=&quot;Disable encryption&quot; data-position=&quot;bottom center&quot; href=&quot;#&quot;&gt; 
-          &lt;$button message=&quot;tw-clear-password&quot;&gt;&lt;i class=&quot;circular inverted lock icon&quot;&gt;&lt;/i&gt;&lt;/$button&gt;
+          &lt;$button message=&quot;tw-clear-password&quot;&gt;&lt;i class=&quot;inverted lock icon&quot;&gt;&lt;/i&gt;&lt;/$button&gt;
         &lt;/a&gt;
       &lt;/$reveal&gt;
       &lt;$reveal type=&quot;nomatch&quot; state=&quot;$:/isEncrypted&quot; text=&quot;yes&quot;&gt; 
         &lt;a class=&quot;item icon popup&quot; title=&quot;Enable encryption&quot; data-position=&quot;bottom center&quot; href=&quot;#&quot;&gt; 
-          &lt;$button message=&quot;tw-set-password&quot;&gt;&lt;i class=&quot;circular inverted unlock alternate icon&quot;&gt;&lt;/i&gt;&lt;/$button&gt;
+          &lt;$button message=&quot;tw-set-password&quot;&gt;&lt;i class=&quot;inverted unlock alternate icon&quot;&gt;&lt;/i&gt;&lt;/$button&gt;
         &lt;/a&gt;
       &lt;/$reveal&gt;
-      &lt;a class=&quot;popup icon github item&quot; title=&quot;View on Github&quot; data-position=&quot;bottom right&quot; href=&quot;https://github.com/dnordstrom&quot;&gt; 
+      &lt;a class=&quot;popup icon github item&quot; title=&quot;View on Github&quot; data-position=&quot;bottom center&quot; href=&quot;https://github.com/dnordstrom/rocketdrop.in&quot;&gt; 
         &lt;i class=&quot;icon github&quot;&gt;&lt;/i&gt;
+      &lt;/a&gt;
+      &lt;a class=&quot;item icon&quot; href=&quot;#&quot;&gt; 
+        &lt;$button message=&quot;tw-full-screen&quot;&gt;&lt;i class=&quot;inverted fullscreen icon&quot;&gt;&lt;/i&gt;&lt;/$button&gt;
       &lt;/a&gt;
     &lt;/div&gt;
   &lt;/div&gt;
@@ -1951,7 +1909,7 @@ WikiText</span>
 &lt;/$navigator&gt; 
 </pre>
 </div>
-<div title="$:/core/ui/SideBar" revision="0" bag="default">
+<div title="$:/core/ui/SideBar">
 <pre>&lt;!-- The implementation of tabs here is currently a bit unreadable --&gt;
 
 &lt;div class=&quot;tw-sidebar-lists&quot;&gt;
@@ -2011,7 +1969,7 @@ WikiText</span>
 &lt;/div&gt;
 </pre>
 </div>
-<div title="$:/core/ui/TagsEditor" revision="0" bag="default">
+<div title="$:/core/ui/TagsEditor">
 <pre>&lt;$fieldmangler&gt;&lt;div class=&quot;tw-edit-tags-list&quot;&gt;&lt;$list filter=&quot;[is[current]tags[]sort[title]]&quot; listview=&quot;pop&quot; itemClass=&quot;tw-tag-editor-label&quot;&gt;&lt;$setstyle name=&quot;background-color&quot; value={{!!color}} class=&quot;tw-tag-label&quot;&gt;&lt;$view field=&quot;title&quot; format=&quot;text&quot; /&gt;&lt;$button message=&quot;tw-remove-tag&quot; param={{!!title}} class=&quot;btn-invisible tw-remove-tag-button&quot;&gt;&amp;times;&lt;/$button&gt;&lt;/$setstyle&gt;
 &lt;/$list&gt;&lt;/div&gt;
 
@@ -2035,7 +1993,7 @@ WikiText</span>
 &lt;/$fieldmangler&gt;
 </pre>
 </div>
-<div title="$:/core/ui/TiddlerInfo" revision="0" bag="default">
+<div title="$:/core/ui/TiddlerInfo">
 <pre>&lt;div class=&quot;tw-tab-set&quot;&gt; 
   &lt;div class=&quot;tw-tab-buttons ui tabular menu&quot;&gt; 
     &lt;$button class=&quot;item&quot; type=&quot;set&quot; set=&quot;$:/state/tiddlerDropDownTabSet&quot; setTo=&quot;refTab&quot; qualifyTiddlerTitles=&quot;yes&quot; selectedClass=&quot;active&quot;&gt;References&lt;/$button&gt;
@@ -2065,25 +2023,25 @@ WikiText</span>
 &lt;/div&gt;
 &lt;/div&gt;</pre>
 </div>
-<div title="$:/core/images/cancel-button" revision="0" bag="default">
+<div title="$:/core/images/cancel-button">
 <pre>&lt;i class=&quot;icon remove&quot;&gt;&lt;/i&gt;</pre>
 </div>
-<div title="$:/core/images/delete-button" revision="0" bag="default">
+<div title="$:/core/images/delete-button">
 <pre>&lt;i class=&quot;icon trash&quot;&gt;&lt;/i&gt;
 </pre>
 </div>
-<div title="$:/core/images/done-button" revision="0" bag="default">
+<div title="$:/core/images/done-button">
 <pre>&lt;i class=&quot;icon check&quot;&gt;&lt;/i&gt;
 </pre>
 </div>
-<div tags="$:/tags/ViewTemplate" title="$:/core/ui/ViewTemplate/subtitle" revision="0" bag="default">
+<div tags="$:/tags/ViewTemplate" title="$:/core/ui/ViewTemplate/subtitle">
 <pre>&lt;div class=&quot;tw-subtitle&quot;&gt;Updated &lt;$view field=&quot;modified&quot; format=&quot;relativedate&quot;/&gt;&lt;/div&gt;
 </pre>
 </div>
-<div title="$:/theme" revision="0" bag="default">
+<div title="$:/theme">
 <pre>$:/themes/motiwi/motiwi</pre>
 </div>
-<div tags="$:/tags/ViewTemplate" title="$:/core/ui/ViewTemplate/title" revision="0" bag="default">
+<div tags="$:/tags/ViewTemplate" title="$:/core/ui/ViewTemplate/title">
 <pre>&lt;div class=&quot;tw-tiddler-title&quot;&gt; 
   &lt;h1 class=&quot;title&quot;&gt; 
     &lt;span class=&quot;tw-tiddler-controls&quot;&gt; 
@@ -2101,25 +2059,28 @@ WikiText</span>
   &lt;/$reveal&gt;
 &lt;/div&gt;</pre>
 </div>
-<div created="201310101214" creator="Administrator" modified="201310170231" modifier="Administrator" title="$:/view" revision="0" bag="default">
+<div created="201310101214" creator="Administrator" modified="201310170231" modifier="Administrator" title="$:/view">
 <pre>classic</pre>
 </div>
-<div title="$:/StaticBanner" revision="0" bag="default">
+<div title="$:/StaticBanner">
 <pre>&lt;div class=&quot;tw-static-alert&quot;&gt;This page is part of a static HTML representation of the ~TiddlyWiki at http://five.tiddlywiki.com/&lt;/div&gt;
 </pre>
 </div>
-<div list="RocketDrop" title="$:/StoryList" revision="1" bag="default">
+<div title="$:/isEncrypted">
+<pre>no</pre>
+</div>
+<div list="RocketDrop" title="$:/StoryList">
 <pre></pre>
 </div>
 
 </div>
 <!----------- Ordinary tiddlers ----------->
 <div id="storeArea" style="display:none;">
-<div title="AllPages" revision="0" bag="default">
+<div title="AllPages">
 <pre>&lt;$list filter=&quot;[!is[system]sort[title]]&quot; /&gt;
 </pre>
 </div>
-<div created="201310150351" creator="Administrator" modified="201310200417" modifier="Administrator" tags="protocol" title="COMSEC" revision="0" bag="default">
+<div created="201310150351" creator="Administrator" modified="201310200417" modifier="Administrator" tags="protocol" title="COMSEC">
 <pre>Also see [[INFOSEC]], [[OPSEC]], and [[PERSEC]].
 
 &lt;blockquote cite=&quot;https://www.whitehatsec.com/assets/WPstatsReport_052013.pdf&quot;&gt;What’s needed is more secure software, ''not'' more security software.&lt;small&gt;~WhiteHat Website Security Statistics Report&lt;/small&gt;&lt;/blockquote&gt;
@@ -2269,7 +2230,7 @@ Besides XMPP and email, there are a few other interesting solutions as well. ''[
 However, for instant messaging, voice and video calling, and conferencing, XMPP is a time-proven solution that is suitably secured by Off The Record messaging.
 </pre>
 </div>
-<div title="COMSEC Quick Start" revision="0" bag="default">
+<div title="COMSEC Quick Start">
 <pre>* ''Use XMPP (and OTR encryption) for instant messaging.''
 *# Download and install [[Jitsi|https://jitsi.org/Main/Download]].
 *# Use a company account or a personal account (sign up at one of the [[public servers|Communication/XMPP/PublicServers]]).
@@ -2291,7 +2252,7 @@ However, for instant messaging, voice and video calling, and conferencing, XMPP 
 ** ''Innovators &amp; Early Adopters''
 *** [[Mailvelope|http://www.mailpile.is/]] is a free, open source, cross-platform, portable e-mail client that runs in your browser. User-friendly PGP encryption is under development.</pre>
 </div>
-<div created="201310190954" creator="Administrator" modified="201310200402" modifier="Administrator" title="COMSEC Software Evaluation" revision="0" bag="default">
+<div created="201310190954" creator="Administrator" modified="201310200402" modifier="Administrator" title="COMSEC Software Evaluation">
 <pre>! Software Evaluation
 
 The evaluation of software is ongoing as there are a lot of clients available---these are the results so far.
@@ -2516,7 +2477,7 @@ We'll use icons to display which features are included in each of the clients, a
 &lt;/div&gt;
 </pre>
 </div>
-<div title="GettingStarted" revision="0" bag="default">
+<div title="GettingStarted">
 <pre>! Sidebar
 
 In the sidebar menu you'll find shortcuts to help material, the page list, and more. To see it, simply click the menu icon in the top left corner.
@@ -2539,7 +2500,7 @@ TiddlyWiki5 can also run on Node.js, which would allow you to edit the online ve
 
 Node.js hosting is extremely affordable and some providers (such as Heroku, ~AppFog, and Amazon) offer free plans, so it's definitely something to consider.</pre>
 </div>
-<div created="201310161101" creator="Administrator" modified="201310180410" modifier="Administrator" tags="protocol" title="INFOSEC" revision="0" bag="default">
+<div created="201310161101" creator="Administrator" modified="201310180410" modifier="Administrator" tags="protocol" title="INFOSEC">
 <pre>Also see [[COMSEC]], [[OPSEC]], and [[PERSEC]].
 
 &lt;blockquote cite=&quot;http://www.mysecurityiq.org/stats.html&quot;&gt;According to a 2006 report by email security firm Sophos, over 50% of spam is sent by remotely controlled computers infected with spyware.&lt;small&gt;~MySecurityIQ&lt;/small&gt;&lt;/blockquote&gt;
@@ -2554,17 +2515,17 @@ Node.js hosting is extremely affordable and some providers (such as Heroku, ~App
 * ''To be continued.''
 ** ''Next:'' Password generators and managers.</pre>
 </div>
-<div created="201310190944" creator="Administrator" modified="201310190944" modifier="Administrator" title="New Tiddler" revision="0" bag="default">
+<div created="201310190944" creator="Administrator" modified="201310190944" modifier="Administrator" title="New Tiddler">
 <pre>Newly created tiddler</pre>
 </div>
-<div created="201310151013" creator="Administrator" modified="201310180317" modifier="Administrator" tags="protocol" title="OPSEC" revision="0" bag="default">
+<div created="201310151013" creator="Administrator" modified="201310180317" modifier="Administrator" tags="protocol" title="OPSEC">
 <pre>Also see [[COMSEC]], [[INFOSEC]], and [[PERSEC]].
 
 ! Operational Security
 
 * Do not talk too loudly or too much.</pre>
 </div>
-<div created="201310180608" creator="Administrator" modified="201310180640" modifier="Administrator" title="PERSEC" revision="0" bag="default">
+<div created="201310180608" creator="Administrator" modified="201310180640" modifier="Administrator" title="PERSEC">
 <pre>Also see [[COMSEC]], [[INFOSEC]], and [[OPSEC]].
 
 ! Personal Security
@@ -2592,7 +2553,7 @@ The harassment had been sent from a Gmail account, and upon investigation, it wa
 
 While COMSEC was ultimately the issue, Petraeus did not practice PERSEC: his extramarital activities were exposed due to his lover’s indiscretion, not his own.</pre>
 </div>
-<div tags="communication" title="PublicXMPPServers" revision="0" bag="default">
+<div tags="communication" title="PublicXMPPServers">
 <pre>XMPP (earlier named Jabber) is a federated protocol, meaning that you can sign up at any public server and talk to users on all other public servers. The visual difference is your account name---if you sign up with creep.im, the account name you enter into your chat client will be //username//@creep.im.
 
 Facebook actually uses XMPP for its chat feature. You can log into Facebook Chat using your //username//@facebook.com credentials with any XMPP client. Unfortunately their service is not public, so you can only chat with other Facebook users.
@@ -2607,7 +2568,7 @@ There are many public XMPP servers for you to choose from, and these are only a 
 
 More public servers are listed at [[xmpp.net|http://xmpp.net/]].</pre>
 </div>
-<div created="201310170207" creator="Administrator" modified="201310181121" modifier="Administrator" title="RocketDrop" revision="0" bag="default">
+<div created="201310170207" creator="Administrator" modified="201310181121" modifier="Administrator" title="RocketDrop">
 <pre>This is an experimental content platform for ''~RocketDrop'', powered by the [[TiddlyWiki5|http://five.tiddlywiki.com/]] alpha. The entire platform is contained in a single HTML file that is encrypted with AES.
 
 The online version is hosted with [[GitHub Pages|http://pages.github.com/]]. However, no server is required---you may download it for both viewing and editing offline by clicking the download button in the navigation bar.
@@ -2625,16 +2586,16 @@ Get started browsing by using the sidebar, the search field, or the GettingStart
   &lt;/div&gt;
 &lt;/div&gt;</pre>
 </div>
-<div tags="image" title="rocketdrop.png" type="image/png" revision="0" bag="default">
+<div tags="image" title="rocketdrop.png" type="image/png">
 <pre>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</pre>
 </div>
-<div modifier="JeremyRuston" title="SiteSubtitle" revision="0" bag="default">
+<div modifier="JeremyRuston" title="SiteSubtitle">
 <pre>a non-linear personal web notebook</pre>
 </div>
-<div created="201310170202" creator="Administrator" modifier="JeremyRuston" title="SiteTitle" revision="0" bag="default">
+<div created="201310170202" creator="Administrator" modifier="JeremyRuston" title="SiteTitle">
 <pre>~RocketDrop</pre>
 </div>
-<div created="201308221728" creator="JeremyRuston" modified="201309102146" modifier="JeremyRuston" tags="introduction" title="Features" revision="0" bag="default">
+<div created="201308221728" creator="JeremyRuston" modified="201309102146" modifier="JeremyRuston" tags="introduction" title="Features">
 <pre>* The ability to save changes on almost any desktop HTML5 compatible-browser
 * [[Bitmap images|Motovun Jack.jpg]] and [[SVG images|Motovun Jack.svg]] are first-class citizens alongside text
 * Concise and expressive WikiText that generates semantic HTML
@@ -2654,7 +2615,7 @@ Get started browsing by using the sidebar, the search field, or the GettingStart
 The deep internal changes mean that TiddlyWiki5 is not compatible with previous versions, using different plugins, themes and so on. Content prepared for previous versions of TiddlyWiki will need massaging to work properly in TiddlyWiki5. When asking or searching for help be sure to specify TiddlyWiki5 (or TW5).
 </pre>
 </div>
-<div created="201308221707" creator="JeremyRuston" modified="201308252013" modifier="JeremyRuston" tags="concepts" title="TiddlyWiki" revision="0" bag="default">
+<div created="201308221707" creator="JeremyRuston" modified="201308252013" modifier="JeremyRuston" tags="concepts" title="TiddlyWiki">
 <pre>TiddlyWiki is a rich, interactive tool for manipulating complex data with structure that doesn't easily fit into conventional tools like spreadsheets or wordprocessors.
 
 TiddlyWiki is designed to fit around your brain, helping you deal with the things that won't fit. The fundamental idea is that information is more useful and reusable if we cut it up into the smallest semantically meaningful chunks -- [[tiddlers|Tiddlers]] -- and give them titles so that they can be structured with links, tags, lists and macros.  Tiddlers use a WikiText notation that concisely represents a wide range of text formatting and hypertext features. TiddlyWiki aims to provide a fluid interface for working with tiddlers, allowing them to be aggregated and composed into longer narratives.
@@ -2662,11 +2623,11 @@ TiddlyWiki is designed to fit around your brain, helping you deal with the thing
 People [[love using|Raves]] TiddlyWiki. Because it can be used without any complicated server infrastructure, and because it is [[open source|OpenSource]], it has bought unprecedented freedom to people to keep their precious information under their own control. TiddlyWiki was originally created by JeremyRuston and is now a thriving [[open source|OpenSource]] project with a busy [[Community]] of independent developers.
 </pre>
 </div>
-<div created="201308252136" creator="JeremyRuston" modified="201308252136" modifier="JeremyRuston" tags="concepts" title="TiddlyWiki5" revision="0" bag="default">
+<div created="201308252136" creator="JeremyRuston" modified="201308252136" modifier="JeremyRuston" tags="concepts" title="TiddlyWiki5">
 <pre>TiddlyWiki5 is a reboot of TiddlyWiki for the next 25 years. It is a complete interactive wiki in JavaScript that can be run in the browser or on the server under [[node.js]].
 </pre>
 </div>
-<div modified="201305011529" tags="concepts" title="WikiText" type="text/vnd.tiddlywiki" revision="0" bag="default">
+<div modified="201305011529" tags="concepts" title="WikiText" type="text/vnd.tiddlywiki">
 <pre>\define wikitext-example(src)
 ```
 $src$
@@ -2957,11 +2918,11 @@ $$$
 See TypedBlockWikiText for more details
 </pre>
 </div>
-<div created="201308281853" creator="JeremyRuston" modified="201308281853" modifier="JeremyRuston" tags="definitions" title="CamelCase" revision="0" bag="default">
+<div created="201308281853" creator="JeremyRuston" modified="201308281853" modifier="JeremyRuston" tags="definitions" title="CamelCase">
 <pre>CamelCase is formed by taking a phrase, capitalising each initial letter and smashing them together to form a portmanteau word. Most wikis use CamelCase to signal phrases that should be automatically linked.
 </pre>
 </div>
-<div tags="widget" title="GridWidget" revision="0" bag="default">
+<div tags="widget" title="GridWidget">
 <pre>The grid widget assembles tiddlers into a tabular grid based on their titles. For example:
 
 ```
@@ -2979,7 +2940,7 @@ The result is:
 &lt;$grid prefix=&quot;GridDemo&quot; rows=3 cols=3/&gt;
 </pre>
 </div>
-<div tags="widget" title="LinkWidget" revision="0" bag="default">
+<div tags="widget" title="LinkWidget">
 <pre>The `link` widget generates links to tiddlers and external URIs. Optionally, hovering over a link can trigger the display of another tiddler as a popup.
 
 ! Attributes
@@ -3051,7 +3012,7 @@ Link targets default to the URL encoded title of the tiddler. The `href` can be 
 ```
 </pre>
 </div>
-<div created="201308241419" creator="JeremyRuston" modified="201308300837" modifier="JeremyRuston" tags="widget" title="ListWidget" revision="0" bag="default">
+<div created="201308241419" creator="JeremyRuston" modified="201308300837" modifier="JeremyRuston" tags="widget" title="ListWidget">
 <pre>\define demoMacro(title)
 This is the tiddler called [[Blah-$title$]]
 \end
@@ -3143,7 +3104,7 @@ Here the outer list filter selects each discrete day found in the `modified` fie
 
 </pre>
 </div>
-<div created="201308241543" creator="JeremyRuston" modified="201308241543" modifier="JeremyRuston" tags="widget" title="TiddlerWidget" revision="0" bag="default">
+<div created="201308241543" creator="JeremyRuston" modified="201308241543" modifier="JeremyRuston" tags="widget" title="TiddlerWidget">
 <pre>! Introduction
 
 The TiddlerWidget sets the ContextTiddler that applies for processing its content.
@@ -3155,7 +3116,7 @@ The TiddlerWidget sets the ContextTiddler that applies for processing its conten
 |class |CSS classes to added to the generated elements |
 </pre>
 </div>
-<div created="201308241425" creator="JeremyRuston" modified="201308241530" modifier="JeremyRuston" tags="widget" title="TranscludeWidget" revision="0" bag="default">
+<div created="201308241425" creator="JeremyRuston" modified="201308241530" modifier="JeremyRuston" tags="widget" title="TranscludeWidget">
 <pre>! Introduction
 
 The TranscludeWidget dynamically imports content from another tiddler.
@@ -3174,7 +3135,7 @@ The TranscludeWidget ignores any contained content.
 
 </pre>
 </div>
-<div tags="widget" title="VideoWidget" revision="0" bag="default">
+<div tags="widget" title="VideoWidget">
 <pre>Here is a collection of embedded videos. Try opening and closing tiddlers while the videos are playing; they should not be affected.
 
 &lt;$video src=&quot;32001208&quot; type=&quot;vimeo&quot; /&gt;
@@ -3184,7 +3145,7 @@ The TranscludeWidget ignores any contained content.
 &lt;$video src=&quot;santa_claus_conquers_the_martians_ipod&quot; type=&quot;archiveorg&quot; /&gt;
 </pre>
 </div>
-<div tags="wikitextrule" title="StyleBlockWikiText" revision="0" bag="default">
+<div tags="wikitextrule" title="StyleBlockWikiText">
 <pre>This syntax enables you to assign arbitrary styles and classes to generated elements. For example:
 
 ```
@@ -3239,7 +3200,7 @@ The generated HTML is:
 
 </pre>
 </div>
-<div created="201309141321" creator="JeremyRuston" modified="201309141355" modifier="JeremyRuston" tags="wikitextrule" title="TableWikiText" revision="0" bag="default">
+<div created="201309141321" creator="JeremyRuston" modified="201309141355" modifier="JeremyRuston" tags="wikitextrule" title="TableWikiText">
 <pre>! Basics
 
 TiddlyWiki5 formats tables using vertical bar characters like so:
@@ -3311,7 +3272,7 @@ Renders as:
 |Footer|Footer|f
 </pre>
 </div>
-<div tags="wikitextrule" title="TypedBlockWikiText" revision="0" bag="default">
+<div tags="wikitextrule" title="TypedBlockWikiText">
 <pre>WikiText can include blocks of text that are rendered with an explicit ContentType like this:
 
 ```
